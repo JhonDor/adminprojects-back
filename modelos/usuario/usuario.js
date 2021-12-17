@@ -1,9 +1,29 @@
 import mongoose from 'mongoose';
-
 const { Schema, model } = mongoose;
 
-const userSchema = new Schema(
-  {
+
+const userSchema = new Schema({
+  correo: {
+    type: String,
+    required: true,
+    unique: true,
+    validate: {
+      validator: (email) => {
+        return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+      },
+      
+      message: 'El formato del correo electrónico está malo.',
+    },
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  identificacion: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   nombre: {
     type: String,
     required: true,
@@ -12,26 +32,9 @@ const userSchema = new Schema(
     type: String,
     required: true,
   },
-  correo: {
+  foto: {
     type: String,
-    required: true,
-    unique: true,
-    validate: {
-      validator: function (correo) {
-        return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(correo);
-       
-      },
-      message: "Por favor ingrese un correo válido",
-    },
-  },
-
-  password: {
-    type: String,
-    required: true,
-  },
-  identificacion: {
-    type: String,
-    required: true,
+    required: false,
   },
   rol: {
     type: String,
@@ -40,7 +43,6 @@ const userSchema = new Schema(
   },
   estado: {
     type: String,
-    required: true,
     enum: ['PENDIENTE', 'AUTORIZADO', 'NO_AUTORIZADO'],
     default: 'PENDIENTE',
   },
@@ -64,6 +66,6 @@ userSchema.virtual('inscripciones', {
   foreignField: 'estudiante',
 });
 
-const UserModel = model('Usuario', userSchema );
+const UserModel = model('User', userSchema);
 
 export { UserModel };

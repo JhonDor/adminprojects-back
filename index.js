@@ -1,21 +1,21 @@
 import express from 'express';
 import cors from 'cors';
-import {ApolloServer} from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
 import dotenv from 'dotenv';
 import connectDB from './db/db.js';
-import { tipos} from './graphql/types.js';
+import { tipos } from './graphql/types.js';
 import { resolvers } from './graphql/resolvers.js';
-import {validateToken} from './utils/tokenUtils.js';
-
+import { validateToken } from './utils/tokenUtils.js';
 
 dotenv.config();
+
 const getUserData = (token) => {
   const verificacion = validateToken(token.split(' ')[1]);
-    if(verificacion.data){
-      return verificacion.data;
-    } else {
-      return null;
-    }
+  if (verificacion.data) {
+    return verificacion.data;
+  } else {
+    return null;
+  }
 };
 
 const server = new ApolloServer({
@@ -25,6 +25,7 @@ const server = new ApolloServer({
     const token = req.headers?.authorization ?? null;
     if (token) {
       const userData = getUserData(token);
+      console.log('user data', userData);
       if (userData) {
         return { userData };
       }
@@ -34,17 +35,16 @@ const server = new ApolloServer({
 });
 
 const app = express();
+
 app.use(express.json());
+
 app.use(cors());
 
-app.listen({ port: process.env.PORT || 4000 },async ()=>{
+app.listen({ port: process.env.PORT || 4000 }, async () => {
   await connectDB();
   await server.start();
 
-  server.applyMiddleware({app});
+  server.applyMiddleware({ app });
 
   console.log('servidor listo');
 });
-
-
-

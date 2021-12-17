@@ -29,9 +29,7 @@ const resolverInscripciones = {
       return inscripciones;
     },
 
-    // inscripcionesNoAprobadas: async () => {
-    //   const ina = await InscriptionModel.find({ estado: 'PENDIENTE' }).populate('estudiante');
-    // },
+   
   },
   Mutation: {
     crearInscripcion: async (parent, args) => {
